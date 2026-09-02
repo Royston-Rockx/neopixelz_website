@@ -146,42 +146,6 @@ window.addEventListener('scroll', updateStackCards, { passive: true });
 window.addEventListener('resize', updateStackCards, { passive: true });
 window.addEventListener('load', updateStackCards);
 
-const serviceScatter = document.querySelector('.service-scatter');
-
-if (serviceScatter) {
-  const serviceWords = [...serviceScatter.querySelectorAll('.service-word-cloud')];
-  const revealRadius = 260;
-  const fullRevealRadius = 72;
-
-  serviceScatter.addEventListener('pointermove', (event) => {
-    const rect = serviceScatter.getBoundingClientRect();
-    const pointerX = event.clientX - rect.left;
-    const pointerY = event.clientY - rect.top;
-    serviceScatter.style.setProperty('--spot-x', `${pointerX}px`);
-    serviceScatter.style.setProperty('--spot-y', `${pointerY}px`);
-
-    serviceWords.forEach((word) => {
-      const wordRect = word.getBoundingClientRect();
-      const wordLeft = wordRect.left - rect.left;
-      const wordTop = wordRect.top - rect.top;
-      const wordRight = wordLeft + wordRect.width;
-      const wordBottom = wordTop + wordRect.height;
-      const dx = Math.max(wordLeft - pointerX, 0, pointerX - wordRight);
-      const dy = Math.max(wordTop - pointerY, 0, pointerY - wordBottom);
-      const distance = Math.hypot(dx, dy);
-      const rawStrength = 1 - ((distance - fullRevealRadius) / (revealRadius - fullRevealRadius));
-      const strength = Math.max(0, Math.min(1, rawStrength));
-      const easedStrength = strength * strength * (3 - 2 * strength);
-      word.style.setProperty('--reveal', easedStrength.toFixed(3));
-    });
-  }, { passive: true });
-
-  serviceScatter.addEventListener('pointerleave', () => {
-    serviceWords.forEach((word) => {
-      word.style.setProperty('--reveal', '0');
-    });
-  }, { passive: true });
-}
 
 const introHeading = document.querySelector('.intro-heading');
 
