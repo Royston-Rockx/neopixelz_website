@@ -35,15 +35,16 @@ if (prefersReduced) {
   revealItems.forEach((item) => io.observe(item));
 }
 
-
-document.body.classList.add('is-loading');
 const splash = document.querySelector('.splash-screen');
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    if (splash) splash.classList.add('is-hidden');
-    document.body.classList.remove('is-loading');
-  }, 1400);
-});
+if (splash) {
+  document.body.classList.add('is-loading');
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      splash.classList.add('is-hidden');
+      document.body.classList.remove('is-loading');
+    }, 1400);
+  });
+}
 
 
 const cursorDot = document.querySelector('.pixel-cursor-dot');
@@ -158,11 +159,21 @@ if (introHeading) {
     line.textContent = '';
     line.dataset.letterized = 'true';
 
-    [...text].forEach((char) => {
-      const span = document.createElement('span');
-      span.className = 'intro-letter';
-      span.textContent = char === ' ' ? '\u00a0' : char;
-      line.appendChild(span);
+    text.trim().split(/\s+/).forEach((word, wordIndex) => {
+      const wordSpan = document.createElement('span');
+      wordSpan.className = 'intro-word';
+
+      [...word].forEach((char) => {
+        const letterSpan = document.createElement('span');
+        letterSpan.className = 'intro-letter';
+        letterSpan.textContent = char;
+        wordSpan.appendChild(letterSpan);
+      });
+
+      line.appendChild(wordSpan);
+      if (wordIndex < text.trim().split(/\s+/).length - 1) {
+        line.appendChild(document.createTextNode(' '));
+      }
     });
   });
 
