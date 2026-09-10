@@ -263,6 +263,51 @@ if (testimonialLogos.length) {
   }
 }
 
+const statCounters = [...document.querySelectorAll('[data-count-up]')];
+
+if (statCounters.length) {
+  const setCounterValue = (counter, value) => {
+    counter.textContent = `${value}${counter.dataset.suffix || ''}`;
+  };
+
+  const animateCounter = (counter) => {
+    const target = Number(counter.dataset.countUp);
+    const duration = 1100;
+    const startTime = performance.now();
+
+    const updateCounter = (now) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      setCounterValue(counter, Math.round(target * easedProgress));
+
+      if (progress < 1) {
+        requestAnimationFrame(updateCounter);
+      } else {
+        setCounterValue(counter, target);
+      }
+    };
+
+    setCounterValue(counter, 0);
+    requestAnimationFrame(updateCounter);
+  };
+
+  if (prefersReduced) {
+    statCounters.forEach((counter) => setCounterValue(counter, counter.dataset.countUp));
+  } else {
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+
+        statCounters.forEach(animateCounter);
+        statsObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.35 });
+
+    const statsBlock = document.querySelector('.stats-block');
+    if (statsBlock) statsObserver.observe(statsBlock);
+  }
+}
+
 /* Removed Recent Works scroll controller */
 
 /* global smooth scroll controller removed to restore native scrolling. */
