@@ -245,22 +245,7 @@ if (testimonialCarousel) {
 const testimonialLogos = [...document.querySelectorAll('.testimonials-brand-row img')];
 
 if (testimonialLogos.length) {
-  let activeLogoIndex = 0;
-
-  const showLogo = (index) => {
-    activeLogoIndex = index % testimonialLogos.length;
-    testimonialLogos.forEach((logo, logoIndex) => {
-      logo.classList.toggle('is-active', logoIndex === activeLogoIndex);
-    });
-  };
-
-  showLogo(0);
-
-  if (!prefersReduced) {
-    window.setInterval(() => {
-      showLogo(activeLogoIndex + 1);
-    }, 1400);
-  }
+  // Logos now scroll continuously via CSS marquee; no highlight cycle.
 }
 
 const statCounters = [...document.querySelectorAll('[data-count-up]')];
